@@ -7,15 +7,17 @@ RUN apk update && \
 
 RUN apk add git wget ncurses-dev flex bison gperf cmake ninja ccache
 
-ENV IDF_VERSION release/v3.3
-ENV TOOLCHAIN_FILENAME xtensa-esp32-elf-gcc8_2_0-esp32-2019r1-linux-amd64
+ENV IDF_VERSION v3.2.2
+ENV TOOLCHAIN_FILENAME xtensa-esp32-elf-linux64-1.22.0-80-g6c4433a-5.2.0.tar.gz
 
-RUN cd /srv && \
+RUN mkdir /esp && \
+    cd /esp && \
     git clone --single-branch --depth=1 -b $IDF_VERSION --recursive https://github.com/espressif/esp-idf.git && \
     rm -rf /srv/esp-idf/.git
-RUN wget -nv https://dl.espressif.com/dl/${TOOLCHAIN_FILENAME}.tar.gz && \
-    tar -xzf ${TOOLCHAIN_FILENAME}.tar.gz && \
-    rm -f ${TOOLCHAIN_FILENAME}.tar.gz
+RUN cd /esp/ && \
+    wget -nv https://dl.espressif.com/dl/${TOOLCHAIN_FILENAME} && \
+    tar -xzf ${TOOLCHAIN_FILENAME} && \
+    rm -f ${TOOLCHAIN_FILENAME}
 
-ENV PATH=/srv/xtensa-esp32-elf/bin:/srv/esp-idf/tools:$PATH
-ENV IDF_PATH=/srv/esp-idf
+ENV PATH=/esp/xtensa-esp32-elf/bin:/esp/esp-idf/tools:$PATH
+ENV IDF_PATH=/esp/esp-idf
